@@ -101,9 +101,11 @@ namespace detail {
                          context_type & ctx,
                          int type,
                          bool optimize_single_threaded,
-                         boost::system::error_code & ec) {
+                         boost::system::error_code & ec,
+                         zmq_router_skt_peer_connect_notification_fn* pCnfn = nullptr,
+                         void* pCnfnHint = nullptr) {
                 BOOST_ASSERT_MSG(!socket_, "socket already open");
-                socket_ = socket_ops::create_socket(ctx, type, ec);
+                socket_ = socket_ops::create_socket(ctx, type, ec, pCnfn, pCnfnHint);
                 if (ec) return;
 
                 sd_ = socket_ops::get_stream_descriptor(ios, socket_, ec);
@@ -233,12 +235,14 @@ namespace detail {
         boost::system::error_code do_open(implementation_type & impl,
                                           int type,
                                           bool optimize_single_threaded,
-                                          boost::system::error_code & ec) {
+                                          boost::system::error_code & ec,
+                                          zmq_router_skt_peer_connect_notification_fn* pCnfn = nullptr,
+                                          void* pCnfnHint = nullptr) {
             BOOST_ASSERT_MSG(impl, "impl");
 #ifdef AZMQ_DETAIL_USE_IO_SERVICE
-            impl->do_open(get_io_service(), ctx_, type, optimize_single_threaded, ec);
+            impl->do_open(get_io_service(), ctx_, type, optimize_single_threaded, ec, pCnfn, pCnfnHint);
 #else
-            impl->do_open(get_io_context(), ctx_, type, optimize_single_threaded, ec);
+            impl->do_open(get_io_context(), ctx_, type, optimize_single_threaded, ec, pCnfn, pCnfnHint);
 #endif
             if (ec)
                 impl.reset();

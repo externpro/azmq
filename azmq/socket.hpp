@@ -103,10 +103,12 @@ public:
      */
     explicit socket(boost::asio::io_service& ios,
                     int type,
-                    bool optimize_single_threaded = false)
+                    bool optimize_single_threaded = false,
+                    zmq_router_skt_peer_connect_notification_fn* pCnfn = nullptr,
+                    void* pCnfnHint = nullptr)
             : azmq::detail::basic_io_object<detail::socket_service>(ios) {
         boost::system::error_code ec;
-        if (get_service().do_open(get_implementation(), type, optimize_single_threaded, ec))
+        if (get_service().do_open(get_implementation(), type, optimize_single_threaded, ec, pCnfn, pCnfnHint))
             throw boost::system::system_error(ec);
     }
 
@@ -694,6 +696,39 @@ namespace detail {
         specialized_socket(boost::asio::io_service & ios,
                            bool optimize_single_threaded = false)
             : Base(ios, Type, optimize_single_threaded)
+        {
+            // Note that we expect these to get sliced to socket, so DO NOT add any data members
+            static_assert(sizeof(*this) == sizeof(socket), "Specialized socket must not have any specific data members");
+        }
+
+        specialized_socket(specialized_socket&& op)
+            : Base(std::move(op))
+        {}
+
+        specialized_socket& operator= (specialized_socket&& rhs)
+        {
+            Base::operator=(std::move(rhs));
+            return *this;
+        }
+    };
+
+    template<>
+    class specialized_socket<ZMQ_ROUTER>: public socket
+    {
+        typedef socket Base;
+
+    public:
+        specialized_socket(boost::asio::io_service & ios,
+                           bool optimize_single_threaded = false)
+            : Base(ios, ZMQ_ROUTER, optimize_single_threaded)
+        {
+            // Note that we expect these to get sliced to socket, so DO NOT add any data members
+            static_assert(sizeof(*this) == sizeof(socket), "Specialized socket must not have any specific data members");
+        }
+        specialized_socket(boost::asio::io_service & ios,
+                           zmq_router_skt_peer_connect_notification_fn* pCnfn,
+                           void* pCnfnHint)
+            : Base(ios, ZMQ_ROUTER, /*optimize_single_threaded=*/false, pCnfn, pCnfnHint)
         {
             // Note that we expect these to get sliced to socket, so DO NOT add any data members
             static_assert(sizeof(*this) == sizeof(socket), "Specialized socket must not have any specific data members");
