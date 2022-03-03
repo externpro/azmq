@@ -78,9 +78,15 @@ namespace detail {
 
         static socket_type create_socket(context_ops::context_type context,
                                          int type,
-                                         boost::system::error_code & ec) {
+                                         boost::system::error_code & ec,
+                                         zmq_router_skt_peer_connect_notification_fn* pCnfn = nullptr,
+                                         void* pCnfnHint = nullptr) {
             BOOST_ASSERT_MSG(context, "Invalid context");
-            auto res = zmq_socket(context.get(), type);
+            void* res = nullptr;
+            if (type == ZMQ_ROUTER && pCnfn)
+              res = zmq_new_router_socket(context.get(), pCnfn, pCnfnHint);
+            else
+              res = zmq_socket(context.get(), type);
             if (!res) {
                 ec = make_error_code();
                 return socket_type();
