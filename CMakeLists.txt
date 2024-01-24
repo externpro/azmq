@@ -39,7 +39,6 @@ if(USE_LIBCXX)
 endif()
 
 if(COMMAND xpFindPkg)
-    set(XP_MODULE_PATH ${CMAKE_MODULE_PATH})
     xpFindPkg(PKGS boost libzmq)
     set(Boost_LIBRARIES Boost::system Boost::thread)
     set(ZeroMQ_LIBRARIES xpro::libzmq-static)
