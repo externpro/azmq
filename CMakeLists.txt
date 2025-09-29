@@ -44,9 +44,10 @@ if(COMMAND xpFindPkg)
     set(Boost_LIBRARIES Boost::system Boost::thread)
     set(ZeroMQ_LIBRARIES xpro::libzmq-static)
 else()
-    set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/config")
-    find_package(Boost 1.48 COMPONENTS system date_time thread chrono random REQUIRED)
-    find_package(ZeroMQ 4.0 REQUIRED)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/config")
+
+find_package(Boost 1.48 COMPONENTS system date_time thread chrono random REQUIRED)
+find_package(ZeroMQ 4.0 REQUIRED)
 endif()
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
