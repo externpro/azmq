@@ -1,5 +1,5 @@
-find_package(Catch2)
-if ( NOT Catch2 )
+find_package(Catch2 2.13 CONFIG QUIET)
+if ( NOT TARGET Catch2::Catch2 )
     Include(FetchContent)
     FetchContent_Declare(
             Catch2
