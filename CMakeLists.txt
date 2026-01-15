@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.31)
+
+file(READ "${CMAKE_CURRENT_LIST_DIR}/azmq/version.hpp" AZMQ_VERSION_HPP)
+string(REGEX MATCH "#define[ \t]+AZMQ_VERSION_MAJOR[ \t]+([0-9]+)" _ "${AZMQ_VERSION_HPP}")
+set(AZMQ_VERSION_MAJOR "${CMAKE_MATCH_1}")
+string(REGEX MATCH "#define[ \t]+AZMQ_VERSION_MINOR[ \t]+([0-9]+)" _ "${AZMQ_VERSION_HPP}")
+set(AZMQ_VERSION_MINOR "${CMAKE_MATCH_1}")
+string(REGEX MATCH "#define[ \t]+AZMQ_VERSION_PATCH[ \t]+([0-9]+)" _ "${AZMQ_VERSION_HPP}")
+set(AZMQ_VERSION_PATCH "${CMAKE_MATCH_1}")
+
 set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
-project(azmq)
+project(azmq VERSION ${AZMQ_VERSION_MAJOR}.${AZMQ_VERSION_MINOR}.${AZMQ_VERSION_PATCH})
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -75,7 +84,7 @@ set(targetsFile ${PROJECT_NAME}-targets)
 if(DEFINED XP_NAMESPACE)
     xpExternPackage(NAMESPACE ${XP_NAMESPACE}
       TARGETS_FILE ${targetsFile} LIBRARIES ${PROJECT_NAME}
-      BASE v1.0.3 XPDIFF "patch" DEPS boost libzmq
+      BASE v${CMAKE_PROJECT_VERSION} XPDIFF "patch" DEPS boost libzmq
       WEB "https://zeromq.org/" UPSTREAM "github.com/zeromq/azmq"
       DESC "provides Boost Asio style bindings for ZeroMQ"
       LICENSE "[BSL-1.0](https://github.com/zeromq/azmq/blob/master/LICENSE-BOOST_1_0 'Boost Software License 1.0')"
