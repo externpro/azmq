@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.31)
 set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
 project(azmq)
 
-include(xpflags)
-
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -71,7 +69,6 @@ if(NOT AZMQ_NO_TESTS)
     add_subdirectory(doc)
 endif()
 
-include(GNUInstallDirs)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} INTERFACE ${Boost_LIBRARIES} ${ZeroMQ_LIBRARIES})
