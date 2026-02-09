@@ -90,11 +90,11 @@ if(DEFINED XP_NAMESPACE)
       LICENSE "[BSL-1.0](https://github.com/zeromq/azmq/blob/master/LICENSE-BOOST_1_0 'Boost Software License 1.0')"
       )
     set(nameSpace NAMESPACE ${XP_NAMESPACE}::)
-elseif(NOT DEFINED XP_INSTALL_CMAKEDIR)
-    set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
+elseif(NOT DEFINED CMAKE_INSTALL_CMAKEDIR)
+    set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
 endif()
 install(TARGETS ${PROJECT_NAME} EXPORT ${targetsFile})
-install(EXPORT ${targetsFile} ${nameSpace} DESTINATION ${XP_INSTALL_CMAKEDIR})
+install(EXPORT ${targetsFile} ${nameSpace} DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/azmq
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
