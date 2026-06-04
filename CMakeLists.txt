@@ -29,6 +29,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # --- dependencies  --
 if(COMMAND xpFindPkg)
     xpFindPkg(PKGS Boost libzmq)
+    set(boost_LIBS Boost::container Boost::random Boost::thread)
     set(libzmq_LIB libzmq::libzmq-static)
 else()
 find_package(
@@ -56,7 +57,7 @@ find_package(Threads REQUIRED)
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(Azmq::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${libzmq_LIB} Boost::boost ${Boost_SYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${PROJECT_NAME} INTERFACE ${libzmq_LIB} Boost::boost ${boost_LIBS} ${Boost_SYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 target_include_directories(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                                                      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
@@ -81,8 +82,8 @@ if (CMAKE_MASTER_PROJECT AND NOT CMAKE_SKIP_INSTALL_RULES)
 
     install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(COMMAND xpExternPackage)
-      xpExternPackage(TARGETS_FILE ${PROJECT_NAME}Targets
-        LIBRARIES ${PROJECT_NAME} DEFAULT_TARGETS ${PROJECT_NAME}
+      xpExternPackage(TARGETS_FILE ${PROJECT_NAME}Targets NO_EXPORT
+        LIBRARIES ${PROJECT_NAME}
         BASE v${PROJECT_VERSION} XPDIFF "patch"
         WEB "https://zeromq.org/" UPSTREAM "github.com/zeromq/azmq"
         DESC "provides Boost Asio style bindings for ZeroMQ"
