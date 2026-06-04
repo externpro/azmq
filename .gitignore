@@ -18,3 +18,8 @@ build_*/*
 # Other files
 .vscode
 .DS_Store
+
+# externpro
+.env
+_bld*/
+docker-compose.override.yml
